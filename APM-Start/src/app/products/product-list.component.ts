@@ -18,7 +18,7 @@ export class ProductListComponent {
 
   constructor(private productService: ProductService) {}
 
-  products$?: Observable<Product[]> = this.productService.products$.pipe(
+  products$? = this.productService.products$.pipe(
     catchError((err) => {
       this.errorMessage = err;
       return of([]);
