@@ -48,7 +48,7 @@
             <td>{{ supplier.name }}</td>
             <td>{{ supplier.cost | currency : "USD" : "symbol" : "1.2-2" }}</td>
             <td>{{ supplier.minQuantity }}</td>
-          </tr>
+          </tr>x
         </tbody>
       </table>
     </div>
@@ -58,6 +58,6 @@
   </ng-template>
 </div>
 
-<div class="alert alert-danger" *ngIf="errorMessage">
+<div class="alert alert-danger" *ngIf="errorMessage$ | async as errorMessage">
   {{ errorMessage }}
 </div>
