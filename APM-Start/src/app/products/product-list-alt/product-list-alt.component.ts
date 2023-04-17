@@ -5,7 +5,7 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 
-import { Observable, Subscription, catchError, of } from 'rxjs';
+import { Observable, Subject, Subscription, catchError, of } from 'rxjs';
 
 import { Product } from '../product';
 import { ProductService } from '../product.service';
@@ -17,12 +17,14 @@ import { ProductService } from '../product.service';
 })
 export class ProductListAltComponent {
   pageTitle = 'Products';
-  errorMessage = '';
+  private errorMessageSubject = new Subject<string>();
+  errorMessage$ = this.errorMessageSubject.asObservable();
 
   products$?: Observable<Product[]> =
     this.productService.productWithCategory$.pipe(
       catchError((err) => {
-        this.errorMessage = err;
+        console.log('error message in product list', err);
+        this.errorMessageSubject.next(err);
         return of([]);
       })
     );
