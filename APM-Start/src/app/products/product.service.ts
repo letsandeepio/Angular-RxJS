@@ -6,7 +6,10 @@ import {
   catchError,
   combineLatest,
   map,
+  merge,
   Observable,
+  scan,
+  Subject,
   tap,
   throwError,
 } from 'rxjs';
@@ -18,7 +21,7 @@ import { ProductCategoryService } from '../product-categories/product-category.s
   providedIn: 'root',
 })
 export class ProductService {
-  private productsUrl = 'api/product';
+  private productsUrl = 'api/products';
   private suppliersUrl = 'api/suppliers';
 
   constructor(
@@ -51,6 +54,19 @@ export class ProductService {
   private productSelectedSubject = new BehaviorSubject<number>(0);
   productSelectedAction$ = this.productSelectedSubject.asObservable();
 
+  private productInsertedSubject = new Subject<Product>();
+  productInsertedAction$ = this.productInsertedSubject.asObservable();
+
+  productsWithAdd$ = merge(
+    this.productWithCategory$,
+    this.productInsertedAction$
+  ).pipe(
+    scan(
+      (acc, value) => (value instanceof Array ? [...value] : [...acc, value]),
+      [] as Product[]
+    )
+  );
+
   selectedProduct$ = combineLatest([
     this.productWithCategory$,
     this.productSelectedAction$,
@@ -63,6 +79,11 @@ export class ProductService {
 
   selectedProductChange(selectedProductId: number): void {
     this.productSelectedSubject.next(selectedProductId);
+  }
+
+  addProduct(newProduct?: Product) {
+    newProduct = newProduct || this.fakeProduct();
+    this.productInsertedSubject.next(newProduct);
   }
 
   private fakeProduct(): Product {
