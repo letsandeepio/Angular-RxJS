@@ -1,9 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Supplier } from 'src/app/suppliers/supplier';
-import { Product } from '../product';
 
-import { ProductService } from '../product.service';
 import { EMPTY, Subject, catchError, combineLatest, filter, map } from 'rxjs';
+import { ProductService } from '../product.service';
 
 @Component({
   selector: 'pm-product-detail',
