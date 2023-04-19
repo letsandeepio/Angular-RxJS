@@ -16,7 +16,7 @@ export class ProductDetailComponent {
   private errorMessageSubject = new Subject<string>();
   errorMessage$ = this.errorMessageSubject.asObservable();
 
-  productSuppliers: Supplier[] | null = null;
+  productSuppliers$ = this.productService.selectedProductSupplier$;
 
   product$ = this.productService.selectedProduct$.pipe(
     catchError((err) => {

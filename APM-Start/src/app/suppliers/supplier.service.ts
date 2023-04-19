@@ -3,9 +3,11 @@ import { Injectable } from '@angular/core';
 
 import {
   Observable,
+  catchError,
   concatMap,
   mergeMap,
   of,
+  shareReplay,
   switchMap,
   tap,
   throwError,
@@ -17,6 +19,12 @@ import { Supplier } from './supplier';
 })
 export class SupplierService {
   suppliersUrl = 'api/suppliers';
+
+  suppliers$ = this.http.get<Supplier[]>(`${this.suppliersUrl}`).pipe(
+    tap((data) => console.log('suppliers', JSON.stringify(data))),
+    shareReplay(1),
+    catchError(this.handleError)
+  );
 
   suppliersWithConcatMap$ = of(1, 5, 8).pipe(
     tap((id) => console.log('concatmap sources observable', id)),
@@ -34,17 +42,15 @@ export class SupplierService {
   );
 
   constructor(private http: HttpClient) {
-    this.suppliersWithConcatMap$.subscribe((item) =>
-      console.log('concat map result', item)
-    );
-
-    this.suppliersWithMergeMap$.subscribe((item) =>
-      console.log('merge map result', item)
-    );
-
-    this.suppliersWithSwitchMap$.subscribe((item) =>
-      console.log('switch map result', item)
-    );
+    // this.suppliersWithConcatMap$.subscribe((item) =>
+    //   console.log('concat map result', item)
+    // );
+    // this.suppliersWithMergeMap$.subscribe((item) =>
+    //   console.log('merge map result', item)
+    // );
+    // this.suppliersWithSwitchMap$.subscribe((item) =>
+    //   console.log('switch map result', item)
+    // );
   }
 
   private handleError(err: HttpErrorResponse): Observable<never> {
